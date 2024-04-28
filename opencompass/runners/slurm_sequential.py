@@ -159,7 +159,7 @@ class SlurmSequentialRunner(BaseRunner):
             # Build up slurm command
             tmpl = 'srun'
             if self.partition:
-                tmpl += f' -p {self.partition}'
+                tmpl += f' -p {self.partition} --exclude=SH-IDC1-10-140-0-190 '
             if self.quotatype:
                 tmpl += f' --quotatype={self.quotatype}'
             if self.qos:

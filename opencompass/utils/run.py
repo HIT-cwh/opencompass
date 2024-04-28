@@ -5,7 +5,7 @@ import tabulate
 from mmengine.config import Config
 
 from opencompass.partitioners import NaivePartitioner, SizePartitioner
-from opencompass.runners import DLCRunner, LocalRunner, SlurmRunner
+from opencompass.runners import DLCRunner, LocalRunner, SlurmRunner, SlurmSequentialRunner
 from opencompass.tasks import OpenICLEvalTask, OpenICLInferTask
 from opencompass.utils import get_logger, match_files
 
@@ -114,7 +114,7 @@ def get_config_from_arg(args) -> Config:
 def exec_mm_infer_runner(tasks, args, cfg):
     """execute multimodal infer runner according to args."""
     if args.slurm:
-        runner = SlurmRunner(dict(type='MultimodalInferTask'),
+        runner = SlurmSequentialRunner(dict(type='MultimodalInferTask'),
                              max_num_workers=args.max_num_workers,
                              partition=args.partition,
                              quotatype=args.quotatype,
@@ -148,7 +148,7 @@ def fill_infer_cfg(cfg, args):
             lark_bot_url=cfg['lark_bot_url'],
         )), )
     if args.slurm:
-        new_cfg['infer']['runner']['type'] = get_config_type(SlurmRunner)
+        new_cfg['infer']['runner']['type'] = get_config_type(SlurmSequentialRunner)
         new_cfg['infer']['runner']['partition'] = args.partition
         new_cfg['infer']['runner']['quotatype'] = args.quotatype
         new_cfg['infer']['runner']['qos'] = args.qos
@@ -175,7 +175,7 @@ def fill_eval_cfg(cfg, args):
                       lark_bot_url=cfg['lark_bot_url'],
                   )))
     if args.slurm:
-        new_cfg['eval']['runner']['type'] = get_config_type(SlurmRunner)
+        new_cfg['eval']['runner']['type'] = get_config_type(SlurmSequentialRunner)
         new_cfg['eval']['runner']['partition'] = args.partition
         new_cfg['eval']['runner']['quotatype'] = args.quotatype
         new_cfg['eval']['runner']['qos'] = args.qos

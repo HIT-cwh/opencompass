@@ -472,6 +472,11 @@ class HuggingFaceCausalLM(HuggingFace):
 
         self._set_model_kwargs_torch_dtype(model_kwargs)
         self.model = AutoModelForCausalLM.from_pretrained(path, **model_kwargs)
+        print(model_kwargs['torch_dtype'])
+        if model_kwargs['torch_dtype'] == torch.bfloat16:
+            assert next(self.model.parameters()).dtype == torch.bfloat16
+        elif model_kwargs['torch_dtype'] == torch.float16:
+            assert next(self.model.parameters()).dtype == torch.float16
         if peft_path is not None:
             from peft import PeftModel
             self.model = PeftModel.from_pretrained(self.model,

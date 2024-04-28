@@ -8,7 +8,7 @@ from mmengine.config import Config, DictAction
 
 from opencompass.partitioners import MultimodalNaivePartitioner
 from opencompass.registry import PARTITIONERS, RUNNERS, build_from_cfg
-from opencompass.runners import SlurmRunner
+from opencompass.runners import SlurmRunner, SlurmSequentialRunner
 from opencompass.summarizers import DefaultSummarizer
 from opencompass.utils import LarkReporter, get_logger
 from opencompass.utils.run import (exec_mm_infer_runner, fill_eval_cfg,
@@ -269,11 +269,11 @@ def main():
             fill_infer_cfg(cfg, args)
 
         if args.partition is not None:
-            if RUNNERS.get(cfg.infer.runner.type) == SlurmRunner:
+            if RUNNERS.get(cfg.infer.runner.type) == SlurmSequentialRunner:
                 cfg.infer.runner.partition = args.partition
                 cfg.infer.runner.quotatype = args.quotatype
         else:
-            logger.warning('SlurmRunner is not used, so the partition '
+            logger.warning('SlurmSequentialRunner is not used, so the partition '
                            'argument is ignored.')
         if args.debug:
             cfg.infer.runner.debug = True
@@ -310,11 +310,11 @@ def main():
             cfg.eval.runner.task.dump_details = True
 
         if args.partition is not None:
-            if RUNNERS.get(cfg.eval.runner.type) == SlurmRunner:
+            if RUNNERS.get(cfg.eval.runner.type) == SlurmSequentialRunner:
                 cfg.eval.runner.partition = args.partition
                 cfg.eval.runner.quotatype = args.quotatype
             else:
-                logger.warning('SlurmRunner is not used, so the partition '
+                logger.warning('SlurmSequentialRunner is not used, so the partition '
                                'argument is ignored.')
         if args.debug:
             cfg.eval.runner.debug = True
